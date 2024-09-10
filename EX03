@@ -1,0 +1,82 @@
+package SOI8;
+import java.util.Arrays;
+import java.util.Random;
+
+class Atleta implements Comparable<Atleta> {
+    int id;
+    double tempoCorrida;
+    double tempoTiro;
+    double tempoCiclismo;
+    int pontuacaoChegada;
+    int pontuacaoTiros;
+    double pontuacaoFinal;
+
+    public Atleta(int id) {
+        this.id = id;
+    }
+
+    @Override
+    public int compareTo(Atleta o) {
+        return Double.compare(o.pontuacaoFinal, this.pontuacaoFinal);
+    }
+}
+
+public class EX03 {
+    static final int NUM_ATLETAS = 25;
+    static final double TEMPO_MIN_CORRIDA = 20 * 60;  // em segundos
+    static final double TEMPO_MAX_CORRIDA = 25 * 60;  // em segundos
+    static final double TEMPO_MIN_TIROS = 0.5;  // tempo mínimo por tiro
+    static final double TEMPO_MAX_TIROS = 3.0;  // tempo máximo por tiro
+    static final double TEMPO_MIN_CICLISMO = 30 * 60;  // em segundos
+    static final double TEMPO_MAX_CICLISMO = 40 * 60;  // em segundos
+    static final int[] PONTOS_CHEGADA = new int[NUM_ATLETAS];
+    static Random rand = new Random();
+
+    public static void main(String[] args) {
+     
+        Atleta[] atletas = new Atleta[NUM_ATLETAS];
+        for (int i = 0; i < NUM_ATLETAS; i++) {
+            atletas[i] = new Atleta(i + 1);
+        }
+
+  
+        for (Atleta atleta : atletas) {
+            atleta.tempoCorrida = TEMPO_MIN_CORRIDA + (TEMPO_MAX_CORRIDA - TEMPO_MIN_CORRIDA) * rand.nextDouble();
+        }
+
+      
+        Arrays.sort(atletas, (a, b) -> Double.compare(a.tempoCorrida, b.tempoCorrida));
+
+   
+        for (int i = 0; i < NUM_ATLETAS; i++) {
+            PONTOS_CHEGADA[i] = 250 - i * 10;
+            atletas[i].pontuacaoChegada = PONTOS_CHEGADA[i];
+        }
+
+        // Simulando os tiros e ciclismo
+        for (Atleta atleta : atletas) {
+            // Tempo de tiro (somando 3 tiros)
+            atleta.tempoTiro = rand.nextDouble() * (TEMPO_MAX_TIROS - TEMPO_MIN_TIROS) * 3 + TEMPO_MIN_TIROS * 3;
+            // Pontuação dos tiros (soma dos 3 tiros)
+            atleta.pontuacaoTiros = rand.nextInt(11) + rand.nextInt(11) + rand.nextInt(11);
+            // Tempo de ciclismo
+            atleta.tempoCiclismo = TEMPO_MIN_CICLISMO + (TEMPO_MAX_CICLISMO - TEMPO_MIN_CICLISMO) * rand.nextDouble();
+        }
+
+        // Calculando a pontuação final
+        for (Atleta atleta : atletas) {
+            atleta.pontuacaoFinal = atleta.pontuacaoChegada + atleta.pontuacaoTiros;
+        }
+
+        // Pontuação final
+        Arrays.sort(atletas);
+
+        // Resultados finais
+        System.out.printf("%-10s %-20s %-20s %-20s %-20s %-20s %-20s\n", "Atleta", "Tempo Corrida", "Tempo Tiros", "Tempo Ciclismo", "Pontuação Chegada", "Pontuação Tiros", "Pontuação Final");
+        for (Atleta atleta : atletas) {
+            System.out.printf("%-10d %-20.2f %-20.2f %-20.2f %-20d %-20d %-20.2f\n", 
+                    atleta.id, atleta.tempoCorrida, atleta.tempoTiro, atleta.tempoCiclismo, 
+                    atleta.pontuacaoChegada, atleta.pontuacaoTiros, atleta.pontuacaoFinal);
+        }
+    }
+}
